@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oakhurst Airbnb Investment Report</title>
+<style>
+:root{--bg:#0f1720;--card:#182430;--card2:#1e2c3a;--line:#2a3b4d;--txt:#e8eef3;--mut:#93a4b3;--acc:#38bdf8;--good:#34d399;--warn:#fbbf24;--bad:#f87171;--gold:#f5c451}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:linear-gradient(180deg,#0b1219,#0f1720);color:var(--txt);line-height:1.5}
+a{color:var(--acc);text-decoration:none}
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px}
+header{padding:38px 0 20px;border-bottom:1px solid var(--line);background:radial-gradient(1200px 300px at 20% -50%,rgba(56,189,248,.15),transparent)}
+h1{margin:0 0 6px;font-size:30px;letter-spacing:-.5px}
+.sub{color:var(--mut);font-size:15px;max-width:780px}
+.chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.chip{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 13px;font-size:13px}
+.chip b{display:block;font-size:19px;color:var(--acc)}
+.chip.g b{color:var(--good)}.chip.w b{color:var(--gold)}
+.note{margin:16px 0;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.35);border-radius:12px;padding:14px 16px;font-size:13.5px;color:#f3e2b8}
+.note b{color:var(--gold)}
+.strbanner{margin:12px 0 0;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.4);border-radius:12px;padding:13px 16px;font-size:13.5px;color:#c7f2e0}
+.strbanner b{color:var(--good)}
+.controls{position:sticky;top:0;z-index:20;background:rgba(15,23,32,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:12px 0;margin-bottom:6px}
+.controls .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.controls label{font-size:12px;color:var(--mut);margin-right:4px}
+select,input[type=range]{background:var(--card);color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-size:13px}
+.toggle{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:7px 11px;font-size:13px;cursor:pointer;user-select:none}
+.toggle input{accent-color:var(--acc)}
+h2{font-size:20px;margin:30px 0 4px}
+.h2sub{color:var(--mut);font-size:13px;margin-bottom:16px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:.15s}
+.card:hover{border-color:var(--acc);transform:translateY(-2px)}
+.rankbadge{position:absolute;top:10px;left:10px;background:rgba(0,0,0,.72);border:1px solid rgba(255,255,255,.18);color:#fff;font-size:12px;font-weight:700;padding:4px 9px;border-radius:20px}
+.gradebadge{position:absolute;top:10px;right:10px;background:var(--good);color:#04231a;font-weight:800;font-size:13px;padding:4px 9px;border-radius:8px}
+.gradebadge.b{background:#7dd3fc;color:#062231}.gradebadge.f{background:var(--bad);color:#2b0b0b}
+.hero{position:relative;aspect-ratio:16/10;background:#0b1219}
+.hero img{width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in}
+.thumbs{display:flex;gap:5px;padding:7px 9px;background:var(--card2);overflow-x:auto}
+.thumbs img{width:52px;height:38px;object-fit:cover;border-radius:5px;cursor:pointer;opacity:.6;border:2px solid transparent;flex:0 0 auto}
+.thumbs img.on,.thumbs img:hover{opacity:1;border-color:var(--acc)}
+.cbody{padding:14px 15px 16px;display:flex;flex-direction:column;gap:11px;flex:1}
+.addr{font-size:16px;font-weight:700}
+.price{font-size:22px;font-weight:800;color:#fff}
+.price span{font-size:13px;color:var(--mut);font-weight:500}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-size:11.5px;padding:3px 8px;border-radius:20px;border:1px solid var(--line);background:var(--card2)}
+.tag.ht{background:rgba(52,211,153,.14);border-color:rgba(52,211,153,.45);color:#8ff0cf}
+.tag.no{color:var(--mut)}
+.tag.hoa{background:rgba(251,191,36,.12);border-color:rgba(251,191,36,.4);color:#f3d98a}
+.strline{font-size:12px;padding:7px 9px;border-radius:9px;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.35);color:#bdeed8}
+.strline.hoa{background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.38);color:#f0dca0}
+.strline b{color:#fff}
+.insight{font-size:12.5px;line-height:1.5;padding:10px 11px;border-radius:10px;background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.3);border-left:3px solid var(--acc);color:#d6e6f2}
+.insight .lbl{display:block;font-size:10.5px;letter-spacing:.5px;text-transform:uppercase;color:var(--acc);font-weight:700;margin-bottom:3px}
+.insight b{color:#fff}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.stat{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:9px 10px}
+.stat .k{font-size:11px;color:var(--mut)}
+.stat .v{font-size:17px;font-weight:800}
+.v.good{color:var(--good)}.v.warn{color:var(--gold)}
+.rev{color:var(--good)}
+.btns{display:flex;gap:7px;margin-top:auto}
+.btn{flex:1;text-align:center;padding:9px 4px;border-radius:9px;font-size:12.5px;font-weight:600;border:1px solid var(--line);background:var(--card2)}
+.btn.z{background:#0b5cff;border-color:#0b5cff;color:#fff}
+.btn.r{background:#a02021;border-color:#a02021;color:#fff}
+.btn.b{background:#0e9f6e;border-color:#0e9f6e;color:#fff}
+table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--mut);font-weight:600;cursor:pointer;position:sticky;top:56px;background:var(--bg);user-select:none}
+th:hover{color:var(--txt)}
+tr:hover td{background:var(--card2)}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+.gpill{font-weight:700;padding:2px 7px;border-radius:6px;font-size:12px;background:var(--good);color:#04231a}
+.gpill.b{background:#7dd3fc;color:#062231}.gpill.f{background:var(--bad);color:#2b0b0b;}.gpill.a{background:#5eead4;color:#04231a}
+.numgood{color:var(--good);font-weight:700}
+.lb{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;z-index:100;cursor:zoom-out}
+.lb img{max-width:92vw;max-height:88vh;border-radius:8px}
+footer{color:var(--mut);font-size:12.5px;padding:30px 0 60px;border-top:1px solid var(--line);margin-top:40px}
+footer b{color:var(--txt)}
+footer a{color:var(--acc)}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<h1>🏔️ Oakhurst Airbnb Investment Report</h1>
+<div class="sub">30 for-sale homes (3+ bd, $300K&ndash;$800K, within ~12&nbsp;min of downtown Oakhurst) analyzed on bnbcalc for projected short-term-rental revenue &amp; returns. Top 10 enriched with hot&nbsp;tub / HOA / STR-permit checks, my per-home insight, and photos. Data: Zillow list prices &middot; bnbcalc projections &middot; Redfin listing details &middot; Madera County ordinance.</div>
+<div class="chips">
+<div class="chip">Homes analyzed<b>30</b></div>
+<div class="chip g">Best proj. revenue<b id="c_rev"></b></div>
+<div class="chip g">Best cash-on-cash<b id="c_coc"></b></div>
+<div class="chip w">With a hot tub<b id="c_ht"></b></div>
+<div class="chip">All ~1&nbsp;hr to<b style="font-size:15px">Yosemite Valley</b></div>
+</div>
+<div class="strbanner">✅ <b>STR permit — verified.</b> In unincorporated Madera County (incl. Oakhurst), <b>whole-home short-term rentals are permitted in all residential zones</b> and “have always been legal” &mdash; no special-use permit or neighbor approval needed (that's only for B&amp;Bs). Every home here is single-family residential, so <b>all are zoning-eligible</b>. You just need: STR permit registration + business license + 9% TOT + a passing fire inspection (~$196). <b>Only per-parcel catch:</b> HOA/CC&amp;Rs can add limits &mdash; and only the two Goldside Estates homes (#1 Griffin, #2 Goldside) carry an HOA, so confirm their CC&amp;Rs allow STR.</div>
+<div class="note"><b>⚠️ Reality check on the projections.</b> bnbcalc rates almost every Oakhurst home A+ and its revenue estimates run <b>optimistic</b> &mdash; the comparable Airbnbs it pulled average ~$54&ndash;60K/yr, yet it projects $85K&ndash;$191K here. Treat cash-on-cash above ~50% (the cheap 3-beds at 95&ndash;100%) as best-case. The most <b>defensible</b> numbers are the larger 4&ndash;6&nbsp;bedroom homes. See my per-home take on each card below.</div>
+</div></header>
+
+<div class="controls"><div class="wrap"><div class="row">
+<span><label>Sort</label><select id="sort">
+<option value="balanced">Balanced (ROI + location)</option>
+<option value="coc">Cash-on-cash &darr;</option>
+<option value="rev">Proj. revenue &darr;</option>
+<option value="pl">Price (low&rarr;high)</option>
+<option value="ph">Price (high&rarr;low)</option>
+<option value="drive">Closest to town</option>
+</select></span>
+<span><label>Max price</label><input type="range" id="maxp" min="300000" max="800000" step="5000" value="800000"><span id="maxpv" style="font-size:12px;color:var(--mut)">$800K</span></span>
+<span><label>Min beds</label><select id="minb"><option>3</option><option>4</option><option>5</option><option>6</option></select></span>
+<label class="toggle"><input type="checkbox" id="htonly">Hot tub only</label>
+<label class="toggle"><input type="checkbox" id="hidef" checked>Hide F-grade</label>
+<label class="toggle"><input type="checkbox" id="top10">Top-10 cards only</label>
+</div></div></div>
+
+<div class="wrap">
+<h2>Top Picks <span style="font-size:13px;color:var(--mut)">&mdash; photos, hot&nbsp;tub, HOA, STR verdict &amp; my take</span></h2>
+<div class="h2sub">Click a thumbnail to change the photo &middot; click the big photo to zoom &middot; buttons open the full Zillow / Redfin galleries and the <b>live bnbcalc analysis</b>.</div>
+<div class="cards" id="cards"></div>
+
+<h2>All 30 Homes</h2>
+<div class="h2sub">Click any column header to sort. Prices are Zillow list; revenue &amp; returns are bnbcalc projections at that price.</div>
+<div class="tw"><table id="tbl"><thead><tr>
+<th data-k="rank">#</th><th data-k="addr">Address</th><th data-k="price">Price</th><th data-k="beds">Bd</th>
+<th data-k="rev">Proj Rev/yr</th><th data-k="cocf">CoC</th><th data-k="cap">Cap</th><th data-k="roi">ROI</th>
+<th data-k="cash">Cash needed</th><th data-k="dscr">DSCR</th><th data-k="grade">STR</th>
+<th data-k="dtmin">Town</th><th data-k="yosmi">Yosemite</th><th>Links</th>
+</tr></thead><tbody id="tbody"></tbody></table></div>
+</div>
+
+<div class="lb" id="lb"><img src=""></div>
+
+<footer><div class="wrap">
+<b>Method.</b> Listings pulled from Zillow (Oakhurst, single-family, 3+ bd, $300K&ndash;$800K, for-sale; auctions &amp; over-budget cross-sells excluded). Each run through bnbcalc.com at its actual list price for projected annual revenue, cash-on-cash, cap rate, ROI, DSCR &amp; STR grade (buttons link the live analysis). Drive-to-town estimated from coordinates (mountain-road factor); Yosemite distance is straight-line&times;1.55 to the <b>Yosemite Valley</b> Visitor Center via Hwy&nbsp;41 (all homes ~40&ndash;47&nbsp;mi / ~1&nbsp;hr; Yosemite's <b>South Entrance</b> is far closer, ~14&nbsp;mi / ~25&nbsp;min). Hot&nbsp;tub &amp; HOA read from each home's current Redfin listing (top 10). <br><br>
+<b>STR permit (verified).</b> Per Madera County, whole-home STRs are allowed in <b>all residential zones</b> of the unincorporated county (incl. Oakhurst) &mdash; no use permit or neighbor sign-off; requires STR/TOT registration, business license, 9% TOT and a passing fire inspection (~$196, 2026). Every listed parcel is single-family residential = zoning-eligible. HOA/CC&amp;Rs may restrict &mdash; only Griffin &amp; Goldside (Goldside Estates) carry an HOA here; confirm their CC&amp;Rs before buying. Sources: <a href="https://www.maderacounty.com/government/community-economic-development-department/divisions/planning-division/short-term-vacation-rental-ordinance" target="_blank">Madera County STVR Ordinance</a>, <a href="https://sierranewsonline.com/can-you-rent-out-your-private-home-as-an-airbnb/" target="_blank">Sierra News (Oakhurst STR explainer)</a>. Always confirm current rules with the <b>Madera County Planning Division</b> before purchase. <br><br>
+<b>Not financial advice.</b> Projections are estimates; verify revenue comps, permits, HOA/CC&amp;Rs &amp; condition independently.
+</div></footer>
+
+<script>
+const DATA=[{"rank": 1, "addr": "40875 Griffin Dr", "price": 330000, "beds": 3, "baths": 2, "rev": 135168, "coc": "101.55%", "cocf": 101.55, "cap": "31.48%", "roi": "117.12%", "cash": 84400, "dscr": "4.67", "grade": "A+", "dtmin": 10, "yosmi": 45, "yosmin": 64, "zurl": "https://www.zillow.com/homedetails/19143553_zpid/", "bnb": "https://www.bnbcalc.com/analysis/40875-griffin-dr-oakhurst-ca-93644/6a44918baf5ea323515ca4ea", "hottub": false, "hoa": "$40/mo (Goldside Estates)", "photos": ["https://ssl.cdn-redfin.com/photo/123/bigphoto/389/645389_4.jpg", "https://ssl.cdn-redfin.com/photo/123/bigphoto/389/645389_1_4.jpg", "https://ssl.cdn-redfin.com/photo/123/bigphoto/389/645389_2_4.jpg", "https://ssl.cdn-redfin.com/photo/123/bigphoto/389/645389_3_4.jpg", "https://ssl.cdn-redfin.com/photo/123/bigphoto/389/645389_4_4.jpg", "https://ssl.cdn-redfin.com/photo/123/bigphoto/389/645389_5_4.jpg"], "rfurl": "https://www.redfin.com/CA/Oakhurst/40875-Griffin-Dr-93644/home/77554956", "insight": "bnbcalc's ~$135K revenue is <b>aggressive</b> for a basic 1,694 sqft 3-bed fixer (listing: \u201cpriced to sell\u2026 potential for the next owner\u201d). Underwrite closer to <b>$80\u201390K</b>. Cheapest entry ($84K cash), but it sits in Goldside Estates \u2014 confirm the CC&Rs allow STR.", "str": "eligible_hoa"}, {"rank": 2, "addr": "40888 Goldside Dr", "price": 347000, "beds": 3, "baths": 2, "rev": 135167, "coc": "95.75%", "cocf": 95.75, "cap": "29.94%", "roi": "111.4%", "cash": 88310, "dscr": "4.44", "grade": "A+", "dtmin": 10, "yosmi": 45, "yosmin": 64, "zurl": "https://www.zillow.com/homedetails/19143470_zpid/", "bnb": "https://www.bnbcalc.com/analysis/40888-goldside-dr-oakhurst-ca-93644/6a449142af5ea323515ca2ca", "hottub": false, "hoa": "$120/qtr (Goldside Estates)", "photos": ["https://ssl.cdn-redfin.com/photo/45/bigphoto/681/FR26065681_0.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/681/FR26065681_1_0.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/681/FR26065681_2_0.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/681/FR26065681_3_0.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/681/FR26065681_4_0.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/681/FR26065681_5_0.jpg"], "rfurl": "https://www.redfin.com/CA/Oakhurst/40888-Goldside-Dr-93644/home/77555072", "insight": "Same street &amp; comps as Griffin, so the ~$135K estimate is <b>equally optimistic</b> for a 1978 3-bed. Attractive low-cash entry; verify Goldside Estates CC&Rs permit STR before counting on the return.", "str": "eligible_hoa"}, {"rank": 3, "addr": "46535 Eastwood Dr S", "price": 549000, "beds": 5, "baths": 4, "rev": 190990, "coc": "87%", "cocf": 87.0, "cap": "27.77%", "roi": "102.7%", "cash": 139270, "dscr": "4.12", "grade": "A+", "dtmin": 8, "yosmi": 44, "yosmin": 63, "zurl": "https://www.zillow.com/homedetails/19142915_zpid/", "bnb": "https://www.bnbcalc.com/analysis/46535-eastwood-dr-s-oakhurst-ca-93644/6a448f2caf5ea323515c9a31", "hottub": false, "hoa": "None (no CC&Rs)", "photos": ["https://ssl.cdn-redfin.com/photo/45/bigphoto/359/FR26077359_1.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/359/FR26077359_1_1.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/359/FR26077359_2_1.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/359/FR26077359_3_1.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/359/FR26077359_4_1.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/359/FR26077359_5_1.jpg"], "rfurl": "https://www.redfin.com/CA/Oakhurst/46535-Eastwood-Dr-S-93644/home/201422591", "insight": "Standout: <b>two separate homes built 2023</b> on 2.64 acres, no HOA/CC&Rs. The $191K projection is high but plausible <i>because</i> it's a dual-dwelling. Highest revenue ceiling here \u2014 just confirm both units can be permitted &amp; rented.", "str": "eligible"}, {"rank": 4, "addr": "50689 Critter Creek Ln", "price": 599900, "beds": 6, "baths": 4, "rev": 178906, "coc": "69.85%", "cocf": 69.85, "cap": "23.66%", "roi": "85.47%", "cash": 152977, "dscr": "3.51", "grade": "A+", "dtmin": 5, "yosmi": 47, "yosmin": 67, "zurl": "https://www.zillow.com/homedetails/19147926_zpid/", "bnb": "https://www.bnbcalc.com/analysis/50689-critter-creek-ln-oakhurst-ca-93644/6a448ef0af5ea323515c9978", "hottub": false, "hoa": "None", "photos": ["https://ssl.cdn-redfin.com/photo/123/bigphoto/378/648378_0.jpg", "https://ssl.cdn-redfin.com/photo/123/bigphoto/378/648378_1_0.jpg", "https://ssl.cdn-redfin.com/photo/123/bigphoto/378/648378_2_0.jpg", "https://ssl.cdn-redfin.com/photo/123/bigphoto/378/648378_3_0.jpg", "https://ssl.cdn-redfin.com/photo/123/bigphoto/378/648378_4_0.jpg", "https://ssl.cdn-redfin.com/photo/123/bigphoto/378/648378_5_0.jpg"], "rfurl": "https://www.redfin.com/CA/Oakhurst/50689-Critter-Creek-Ln-93644/home/58405206", "insight": "6-bed / 2,680 sqft \u2014 a true big-group Yosemite rental. $179K is <b>well-supported by size</b>, making this the most <b>defensible</b> high-revenue play. 5 min to town, no HOA.", "str": "eligible"}, {"rank": 5, "addr": "40885 Elliott Dr", "price": 374900, "beds": 3, "baths": 2, "rev": 85795, "coc": "40.37%", "cocf": 40.37, "cap": "16.26%", "roi": "56.13%", "cash": 94727, "dscr": "2.41", "grade": "A+", "dtmin": 1, "yosmi": 45, "yosmin": 65, "zurl": "https://www.zillow.com/homedetails/19147678_zpid/", "bnb": "https://www.bnbcalc.com/analysis/40885-elliott-dr-oakhurst-ca-93644/6a448a6daf5ea323515c7ed2", "hottub": true, "hoa": "None", "photos": ["https://ssl.cdn-redfin.com/photo/45/bigphoto/706/FR26076706_0.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/706/FR26076706_1_0.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/706/FR26076706_2_0.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/706/FR26076706_3_0.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/706/FR26076706_4_0.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/706/FR26076706_5_0.jpg"], "rfurl": "https://www.redfin.com/CA/Oakhurst/40885-Elliott-Dr-93644/home/77557104", "insight": "The <b>only</b> top-10 home that already has a hot tub. Modest 3-bed, but 1 min to town and an $86K estimate that's <b>closest to comp reality</b> \u2014 the lowest-risk \u201cstarter\u201d STR on the list.", "str": "eligible"}, {"rank": 6, "addr": "38788 Goldenrod Ln", "price": 550000, "beds": 4, "baths": 3, "rev": 129685, "coc": "48.04%", "cocf": 48.04, "cap": "18.02%", "roi": "63.99%", "cash": 137250, "dscr": "2.67", "grade": "A+", "dtmin": 4, "yosmi": 47, "yosmin": 67, "zurl": "https://www.zillow.com/homedetails/19149636_zpid/", "bnb": "https://www.bnbcalc.com/analysis/38788-goldenrod-ln-oakhurst-ca-93644/6a448ca8af5ea323515c91ee", "hottub": false, "hoa": "None", "photos": ["https://ssl.cdn-redfin.com/photo/45/bigphoto/748/FR26047748_0.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/748/FR26047748_1_0.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/748/FR26047748_2_0.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/748/FR26047748_3_0.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/748/FR26047748_4_0.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/748/FR26047748_5_0.jpg"], "rfurl": "https://www.redfin.com/CA/Oakhurst/38788-Goldenrod-Ln-93644/home/58366250", "insight": "<b>My overall pick.</b> 4-bed with a <b>credible</b> ~$130K revenue, 48% CoC, 4 min to town, no HOA. Best balance of upside and defensibility \u2014 large enough to earn real money without relying on best-case assumptions.", "str": "eligible"}, {"rank": 7, "addr": "41243 Pamela Pl", "price": 369000, "beds": 3, "baths": 2, "rev": 116301, "coc": "70.79%", "cocf": 70.79, "cap": "23.71%", "roi": "86.53%", "cash": 93370, "dscr": "3.52", "grade": "A+", "dtmin": 10, "yosmi": 44, "yosmin": 63, "zurl": "https://www.zillow.com/homedetails/19143003_zpid/", "bnb": "https://www.bnbcalc.com/analysis/41243-pamela-pl-oakhurst-ca-93644/6a449022af5ea323515c9ce3", "hottub": false, "hoa": "None", "photos": ["https://ssl.cdn-redfin.com/photo/45/bigphoto/402/FR24176402_J.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/402/FR24176402_1_J.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/402/FR24176402_2_J.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/402/FR24176402_3_J.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/402/FR24176402_4_J.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/402/FR24176402_5_J.jpg"], "rfurl": "https://www.redfin.com/CA/Oakhurst/41243-Pamela-Pl-93644/home/72679102", "insight": "Cheap 3-bed ($369K) with an <b>aggressive</b> $116K estimate \u2014 underwrite to ~$80K. 1-acre corner lot, 10 min to town, no HOA. Good value <i>if</i> the revenue holds.", "str": "eligible"}, {"rank": 8, "addr": "48866 Rock Point Rd", "price": 465000, "beds": 3, "baths": 2, "rev": 89521, "coc": "30.76%", "cocf": 30.76, "cap": "13.8%", "roi": "46.8%", "cash": 115450, "dscr": "2.05", "grade": "A+", "dtmin": 1, "yosmi": 46, "yosmin": 66, "zurl": "https://www.zillow.com/homedetails/19148596_zpid/", "bnb": "https://www.bnbcalc.com/analysis/48866-rock-point-rd-oakhurst-ca-93644/6a448b73af5ea323515c8887", "hottub": false, "hoa": "None", "photos": ["https://ssl.cdn-redfin.com/photo/45/bigphoto/008/FR26114008_2.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/008/FR26114008_1_2.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/008/FR26114008_2_2.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/008/FR26114008_3_2.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/008/FR26114008_4_2.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/008/FR26114008_5_2.jpg"], "rfurl": "https://www.redfin.com/CA/Oakhurst/48866-Rock-Point-Rd-93644/home/59239834", "insight": "Modern-farmhouse reno, 1 min to town, seasonal creek. A <b>prior</b> listing advertised an outdoor \u201cspa\u201d \u2014 confirm it still conveys. $90K estimate is reasonable for the size.", "str": "eligible"}, {"rank": 9, "addr": "50622 Critter Creek Ln", "price": 450000, "beds": 3, "baths": 3, "rev": 102062, "coc": "42.6%", "cocf": 42.6, "cap": "16.69%", "roi": "58.56%", "cash": 112250, "dscr": "2.47", "grade": "A+", "dtmin": 5, "yosmi": 47, "yosmin": 67, "zurl": "https://www.zillow.com/homedetails/19147928_zpid/", "bnb": "https://www.bnbcalc.com/analysis/50622-critter-creek-ln-oakhurst-ca-93644/6a448e44af5ea323515c9781", "hottub": false, "hoa": "None", "photos": ["https://ssl.cdn-redfin.com/photo/45/bigphoto/203/FR25214203_1.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/203/FR25214203_1_1.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/203/FR25214203_2_1.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/203/FR25214203_3_1.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/203/FR25214203_4_1.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/203/FR25214203_5_1.jpg"], "rfurl": "https://www.redfin.com/CA/Oakhurst/50622-Critter-Creek-Ln-93644/home/58369277", "insight": "3-bed on 1.84 secluded acres, no HOA. $102K is on the <b>high side</b> for a 3-bed \u2014 the 6-bed up the same street (#4) is the safer revenue bet if you want this pocket.", "str": "eligible"}, {"rank": 10, "addr": "38720 Highway 41", "price": 599000, "beds": 3, "baths": 3, "rev": 118482, "coc": "35.86%", "cocf": 35.86, "cap": "14.92%", "roi": "52.14%", "cash": 146520, "dscr": "2.21", "grade": "A+", "dtmin": 4, "yosmi": 47, "yosmin": 67, "zurl": "https://www.zillow.com/homedetails/205256764_zpid/", "bnb": "https://www.bnbcalc.com/analysis/38720-ca-41-oakhurst-ca-93644/6a448d1baf5ea323515c9408", "hottub": false, "hoa": "None", "photos": ["https://ssl.cdn-redfin.com/photo/45/bigphoto/570/FR26128570_1.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/570/FR26128570_1_1.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/570/FR26128570_2_1.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/570/FR26128570_3_1.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/570/FR26128570_4_1.jpg", "https://ssl.cdn-redfin.com/photo/45/bigphoto/570/FR26128570_5_1.jpg"], "rfurl": "https://www.redfin.com/CA/Oakhurst/38720-Highway-41-93644/home/58261905", "insight": "<b>13-acre</b> parcel with panoramic Sierra views \u2014 privacy + acreage is a genuine Airbnb draw. $118K is believable for a 2,295 sqft 3-bed with views. No HOA.", "str": "eligible"}, {"rank": 11, "addr": "40182 Alerna Way", "price": 479000, "beds": 3, "baths": 2, "rev": 85499, "coc": "26.08%", "cocf": 26.08, "cap": "12.67%", "roi": "42.16%", "cash": 118670, "dscr": "1.88", "grade": "A+", "dtmin": 3, "yosmi": 45, "yosmin": 64, "zurl": "https://www.zillow.com/homedetails/19148253_zpid/", "bnb": "https://www.bnbcalc.com/analysis/40182-alerna-way-oakhurst-ca-93644/6a448c88af5ea323515c911f", "hottub": null, "hoa": null, "photos": [], "insight": null, "str": "eligible"}, {"rank": 12, "addr": "40202 Hillsborough Loop", "price": 624000, "beds": 4, "baths": 3, "rev": 119542, "coc": "33.58%", "cocf": 33.58, "cap": "14.47%", "roi": "49.69%", "cash": 154270, "dscr": "2.15", "grade": "A+", "dtmin": 5, "yosmi": 45, "yosmin": 64, "zurl": "https://www.zillow.com/homedetails/19148217_zpid/", "bnb": "https://www.bnbcalc.com/analysis/40202-hillsborough-loop-oakhurst-ca-93644/6a448eb5af5ea323515c98ec", "hottub": null, "hoa": null, "photos": [], "insight": null, "str": "eligible"}, {"rank": 13, "addr": "41324 Pamela Place", "price": 475000, "beds": 3, "baths": 2, "rev": 116302, "coc": "50.06%", "cocf": 50.06, "cap": "18.42%", "roi": "66.12%", "cash": 117750, "dscr": "2.73", "grade": "A+", "dtmin": 10, "yosmi": 44, "yosmin": 63, "zurl": "https://www.zillow.com/homedetails/19142998_zpid/", "bnb": "https://www.bnbcalc.com/analysis/41324-pamela-pl-oakhurst-ca-93644/6a4491d0af5ea323515ca6a7", "hottub": null, "hoa": null, "photos": [], "insight": null, "str": "eligible"}, {"rank": 14, "addr": "51375 Dorstan Dr", "price": 355000, "beds": 3, "baths": 1, "rev": 91224, "coc": "49.47%", "cocf": 49.47, "cap": "18.5%", "roi": "65.19%", "cash": 89900, "dscr": "2.74", "grade": "A+", "dtmin": 10, "yosmi": 41, "yosmin": 58, "zurl": "https://www.zillow.com/homedetails/19144117_zpid/", "bnb": "https://www.bnbcalc.com/analysis/51375-dorstan-dr-oakhurst-ca-93644/6a4490f5af5ea323515ca0de", "hottub": null, "hoa": null, "photos": [], "insight": null, "str": "eligible"}, {"rank": 15, "addr": "50047 Hangtree Ln", "price": 429900, "beds": 3, "baths": 2, "rev": 72749, "coc": "21.22%", "cocf": 21.22, "cap": "11.54%", "roi": "37.17%", "cash": 107377, "dscr": "1.71", "grade": "A+", "dtmin": 3, "yosmi": 46, "yosmin": 65, "zurl": "https://www.zillow.com/homedetails/19147801_zpid/", "bnb": "https://www.bnbcalc.com/analysis/50047-hangtree-ln-oakhurst-ca-93644/6a448c5faf5ea323515c901f", "hottub": null, "hoa": null, "photos": [], "insight": null, "str": "eligible"}, {"rank": 16, "addr": "50616 Woodside Ln", "price": 700000, "beds": 4, "baths": 3, "rev": 121674, "coc": "28.3%", "cocf": 28.3, "cap": "13.16%", "roi": "44.53%", "cash": 171750, "dscr": "1.95", "grade": "A+", "dtmin": 5, "yosmi": 44, "yosmin": 63, "zurl": "https://www.zillow.com/homedetails/19148180_zpid/", "bnb": "https://www.bnbcalc.com/analysis/50616-woodside-ln-oakhurst-ca-93644/6a448d79af5ea323515c94f4", "hottub": null, "hoa": null, "photos": [], "insight": null, "str": "eligible"}, {"rank": 17, "addr": "39367 Pine Ridge Rd", "price": 639000, "beds": 3, "baths": 2, "rev": 89523, "coc": "15.29%", "cocf": 15.29, "cap": "10.04%", "roi": "31.66%", "cash": 155470, "dscr": "1.49", "grade": "A", "dtmin": 2, "yosmi": 46, "yosmin": 66, "zurl": "https://www.zillow.com/homedetails/19148588_zpid/", "bnb": "https://www.bnbcalc.com/analysis/39367-pine-ridge-rd-oakhurst-ca-93644/6a448bc1af5ea323515c8b4d", "hottub": null, "hoa": null, "photos": [], "insight": null, "str": "eligible"}, {"rank": 18, "addr": "49947 Road 426", "price": 504900, "beds": 3, "baths": 2, "rev": 72750, "coc": "14.23%", "cocf": 14.23, "cap": "9.82%", "roi": "30.36%", "cash": 124627, "dscr": "1.46", "grade": "B", "dtmin": 2, "yosmi": 46, "yosmin": 65, "zurl": "https://www.zillow.com/homedetails/19147798_zpid/", "bnb": "https://www.bnbcalc.com/analysis/49947-rd-426-oakhurst-ca-93644/6a448c14af5ea323515c8e2e", "hottub": null, "hoa": null, "photos": [], "insight": null, "str": "eligible"}, {"rank": 19, "addr": "42203 Oak Ln", "price": 629000, "beds": 3, "baths": 3, "rev": 140703, "coc": "45.96%", "cocf": 45.96, "cap": "17.28%", "roi": "62.29%", "cash": 153420, "dscr": "2.56", "grade": "A+", "dtmin": 10, "yosmi": 41, "yosmin": 59, "zurl": "https://www.zillow.com/homedetails/19144221_zpid/", "bnb": "https://www.bnbcalc.com/analysis/42203-oak-ln-oakhurst-ca-93644/6a4490b2af5ea323515c9f47", "hottub": null, "hoa": null, "photos": [], "insight": null, "str": "eligible"}, {"rank": 20, "addr": "39670 Highview Dr", "price": 649000, "beds": 3, "baths": 2, "rev": 84286, "coc": "11.66%", "cocf": 11.66, "cap": "9.19%", "roi": "28.04%", "cash": 157770, "dscr": "1.36", "grade": "B", "dtmin": 2, "yosmi": 46, "yosmin": 65, "zurl": "https://www.zillow.com/homedetails/19149272_zpid/", "bnb": "https://www.bnbcalc.com/analysis/39670-highview-dr-oakhurst-ca-93644/6a448bf2af5ea323515c8d04", "hottub": null, "hoa": null, "photos": [], "insight": null, "str": "eligible"}, {"rank": 21, "addr": "42478 Nelder Heights Dr", "price": 450000, "beds": 3, "baths": 2, "rev": 94433, "coc": "36.56%", "cocf": 36.56, "cap": "15.21%", "roi": "52.56%", "cash": 112000, "dscr": "2.26", "grade": "A+", "dtmin": 9, "yosmi": 41, "yosmin": 59, "zurl": "https://www.zillow.com/homedetails/19144005_zpid/", "bnb": "https://www.bnbcalc.com/analysis/42478-nelder-heights-dr-oakhurst-ca-93644/6a448ff1af5ea323515c9c47", "hottub": null, "hoa": null, "photos": [], "insight": null, "str": "eligible"}, {"rank": 22, "addr": "43191 W Sugar Pine Dr", "price": 355000, "beds": 3, "baths": 1, "rev": 83811, "coc": "42.04%", "cocf": 42.04, "cap": "16.68%", "roi": "57.77%", "cash": 89900, "dscr": "2.47", "grade": "A+", "dtmin": 11, "yosmi": 40, "yosmin": 57, "zurl": "https://www.zillow.com/homedetails/19144262_zpid/", "bnb": "https://www.bnbcalc.com/analysis/43191-w-sugar-pine-dr-oakhurst-ca-93644/6a44921eaf5ea323515ca8a6", "hottub": null, "hoa": null, "photos": [], "insight": null, "str": "eligible"}, {"rank": 23, "addr": "52854 Balsam Dr", "price": 456000, "beds": 3, "baths": 3, "rev": 101600, "coc": "41.36%", "cocf": 41.36, "cap": "16.38%", "roi": "57.34%", "cash": 113630, "dscr": "2.43", "grade": "A+", "dtmin": 11, "yosmi": 46, "yosmin": 66, "zurl": "https://www.zillow.com/homedetails/19144839_zpid/", "bnb": "https://www.bnbcalc.com/analysis/52854-balsam-dr-oakhurst-ca-93644/6a4492a5af5ea323515cabdd", "hottub": null, "hoa": null, "photos": [], "insight": null, "str": "eligible"}, {"rank": 24, "addr": "45221 Big Oak Ln", "price": 469000, "beds": 3, "baths": 3, "rev": 107357, "coc": "43.99%", "cocf": 43.99, "cap": "16.99%", "roi": "60%", "cash": 116620, "dscr": "2.52", "grade": "A+", "dtmin": 12, "yosmi": 45, "yosmin": 64, "zurl": "https://www.zillow.com/homedetails/19142938_zpid/", "bnb": "https://www.bnbcalc.com/analysis/45221-big-oak-ln-oakhurst-ca-93644/6a4492ecaf5ea323515cad97", "hottub": null, "hoa": null, "photos": [], "insight": null, "str": "eligible"}, {"rank": 25, "addr": "45893 Sutton Dr", "price": 775000, "beds": 4, "baths": 4, "rev": 148181, "coc": "35.61%", "cocf": 35.61, "cap": "14.86%", "roi": "51.92%", "cash": 189250, "dscr": "2.20", "grade": "A+", "dtmin": 10, "yosmi": 46, "yosmin": 65, "zurl": "https://www.zillow.com/oakhurst-ca/", "bnb": "https://www.bnbcalc.com/analysis/45893-sutton-dr-oakhurst-ca-93644/6a449065af5ea323515c9d94", "hottub": null, "hoa": null, "photos": [], "insight": null, "str": "eligible"}, {"rank": 26, "addr": "50856 Westview Ct", "price": 539900, "beds": 3, "baths": 2, "rev": 74350, "coc": "12.67%", "cocf": 12.67, "cap": "9.44%", "roi": "28.87%", "cash": 132677, "dscr": "1.40", "grade": "B", "dtmin": 5, "yosmi": 46, "yosmin": 65, "zurl": "https://www.zillow.com/homedetails/19148479_zpid/", "bnb": "https://www.bnbcalc.com/analysis/50856-westview-dr-oakhurst-ca-93644/6a448de3af5ea323515c963d", "hottub": null, "hoa": null, "photos": [], "insight": null, "str": "eligible"}, {"rank": 27, "addr": "51300 Road 426", "price": 589000, "beds": 3, "baths": 3, "rev": 96777, "coc": "23.35%", "cocf": 23.35, "cap": "11.97%", "roi": "39.62%", "cash": 144220, "dscr": "1.77", "grade": "A+", "dtmin": 8, "yosmi": 46, "yosmin": 66, "zurl": "https://www.zillow.com/homedetails/19149030_zpid/", "bnb": "https://www.bnbcalc.com/analysis/51300-rd-426-oakhurst-ca-93644/6a448f72af5ea323515c9b29", "hottub": null, "hoa": null, "photos": [], "insight": null, "str": "eligible"}, {"rank": 28, "addr": "45344 S Oakview Dr", "price": 598800, "beds": 3, "baths": 3, "rev": 114699, "coc": "33.55%", "cocf": 33.55, "cap": "14.38%", "roi": "49.84%", "cash": 146474, "dscr": "2.13", "grade": "A+", "dtmin": 11, "yosmi": 45, "yosmin": 64, "zurl": "https://www.zillow.com/homedetails/19143029_zpid/", "bnb": "https://www.bnbcalc.com/analysis/45344-s-oakview-dr-oakhurst-ca-93644/6a449261af5ea323515caa44", "hottub": null, "hoa": null, "photos": [], "insight": null, "str": "eligible"}, {"rank": 29, "addr": "39384 Road 425b", "price": 399999, "beds": 3, "baths": 3, "rev": 44747, "coc": "neg", "cocf": -5.0, "cap": "6.31%", "roi": "16.14%", "cash": 96250, "dscr": "0.94", "grade": "F", "dtmin": 2, "yosmi": 46, "yosmin": 66, "zurl": "https://www.zillow.com/homedetails/19149323_zpid/", "bnb": "https://www.bnbcalc.com/analysis/39384-rd-425b-oakhurst-ca-93644/6a448c3baf5ea323515c8f3f", "hottub": null, "hoa": null, "photos": [], "insight": null, "str": "eligible"}, {"rank": 30, "addr": "46088 Sutton Dr", "price": 739000, "beds": 3, "baths": 3, "rev": 70964, "coc": "0.18%", "cocf": 0.18, "cap": "6.5%", "roi": "16.65%", "cash": 178720, "dscr": "0.96", "grade": "F", "dtmin": 9, "yosmi": 46, "yosmin": 65, "zurl": "https://www.zillow.com/homedetails/19143621_zpid/", "bnb": "https://www.bnbcalc.com/analysis/46088-sutton-dr-oakhurst-ca-93644/6a448fb1af5ea323515c9bad", "hottub": null, "hoa": null, "photos": [], "insight": null, "str": "eligible"}];
+const $=s=>document.querySelector(s);
+const money=n=>'$'+Number(n).toLocaleString();
+const k=n=>'$'+Math.round(n/1000)+'K';
+const gcls=g=>g==='A+'?'':g==='A'?'a':g==='B'?'b':'f';
+const byRev=[...DATA].sort((a,b)=>b.rev-a.rev)[0];
+const byCoc=[...DATA].sort((a,b)=>b.cocf-a.cocf)[0];
+$('#c_rev').textContent=k(byRev.rev);
+$('#c_coc').textContent=byCoc.coc;
+$('#c_ht').textContent=DATA.filter(d=>d.hottub).length+' of top 10';
+
+function cardHTML(d){
+  const g=gcls(d.grade);
+  const thumbs=d.photos.map((u,i)=>`<img src="${u}" class="${i==0?'on':''}" onerror="this.style.display='none'" onclick="swap(this,'${u}')">`).join('');
+  const ht=d.hottub?`<span class="tag ht">♨ Hot tub</span>`:`<span class="tag no">No hot tub</span>`;
+  const hasHoa=d.hoa&&!String(d.hoa).startsWith('None');
+  const hoa=hasHoa?`<span class="tag hoa">HOA ${d.hoa}</span>`:`<span class="tag no">No HOA</span>`;
+  const strTxt=d.str==='eligible_hoa'
+    ? `<b>STR: ✅ Zoning-eligible</b> (SFR). ⚠ In Goldside Estates — confirm HOA CC&Rs allow STR.`
+    : `<b>STR: ✅ Eligible</b> — SFR in a residential zone; permit + 9% TOT + fire inspection.`;
+  const ins=d.insight?`<div class="insight"><span class="lbl">🧭 My take</span>${d.insight}</div>`:'';
+  return `<div class="card">
+  <div class="hero"><span class="rankbadge">#${d.rank}</span><span class="gradebadge ${g}">${d.grade}</span>
+    <img src="${d.photos[0]}" onerror="this.parentNode.style.background='#22303c'" onclick="zoom(this.src)"></div>
+  <div class="thumbs">${thumbs}</div>
+  <div class="cbody">
+    <div><div class="addr">${d.addr}</div><div class="price">${money(d.price)} <span>&middot; ${d.beds} bd / ${d.baths} ba</span></div></div>
+    <div class="tags">${ht}${hoa}<span class="tag">🚗 ${d.dtmin} min to town</span><span class="tag">🏔️ ${d.yosmi} mi to Yosemite Valley</span></div>
+    <div class="grid">
+      <div class="stat"><div class="k">Proj. revenue / yr</div><div class="v rev">${money(d.rev)}</div></div>
+      <div class="stat"><div class="k">Cash-on-cash</div><div class="v ${d.cocf>=45?'warn':'good'}">${d.coc}</div></div>
+      <div class="stat"><div class="k">Cap rate</div><div class="v">${d.cap}</div></div>
+      <div class="stat"><div class="k">Cash needed</div><div class="v">${k(d.cash)}</div></div>
+    </div>
+    <div class="strline ${d.str==='eligible_hoa'?'hoa':''}">${strTxt}</div>
+    ${ins}
+    <div class="btns">
+      <a class="btn z" href="${d.zurl}" target="_blank">Zillow</a>
+      <a class="btn r" href="${d.rfurl}" target="_blank">Redfin</a>
+      <a class="btn b" href="${d.bnb}" target="_blank">bnbcalc ↗</a>
+    </div>
+  </div></div>`;
+}
+function swap(el,u){el.parentNode.parentNode.querySelector('.hero img').src=u;el.parentNode.querySelectorAll('img').forEach(x=>x.classList.remove('on'));el.classList.add('on');}
+function zoom(u){$('#lb img').src=u;$('#lb').style.display='flex';}
+$('#lb').onclick=()=>$('#lb').style.display='none';
+
+function filt(){
+  const maxp=+$('#maxp').value,minb=+$('#minb').value,htonly=$('#htonly').checked,hidef=$('#hidef').checked;
+  return DATA.filter(d=>d.price<=maxp&&d.beds>=minb&&(!htonly||d.hottub)&&(!hidef||d.grade!=='F'));
+}
+const sorters={balanced:(a,b)=>a.rank-b.rank,coc:(a,b)=>b.cocf-a.cocf,rev:(a,b)=>b.rev-a.rev,pl:(a,b)=>a.price-b.price,ph:(a,b)=>b.price-a.price,drive:(a,b)=>a.dtmin-b.dtmin};
+function rowHTML(d){const g=gcls(d.grade);return `<tr><td>${d.rank}</td><td>${d.addr}</td><td>${money(d.price)}</td><td>${d.beds}</td><td class="numgood">${money(d.rev)}</td><td>${d.coc}</td><td>${d.cap}</td><td>${d.roi}</td><td>${k(d.cash)}</td><td>${d.dscr}</td><td><span class="gpill ${g}">${d.grade}</span></td><td>${d.dtmin} min</td><td>${d.yosmi} mi</td><td><a href="${d.zurl}" target="_blank">Zillow</a> &middot; ${d.rfurl?`<a href="${d.rfurl}" target="_blank">Redfin</a> &middot; `:''}<a href="${d.bnb}" target="_blank">bnbcalc</a></td></tr>`;}
+function render(){
+  let list=filt().sort(sorters[$('#sort').value]);
+  const t10=$('#top10').checked;
+  $('#cards').innerHTML=list.filter(d=>d.photos.length).map(cardHTML).join('')||'<p style="color:var(--mut)">No top-pick cards match the filters.</p>';
+  $('#tbody').innerHTML=(t10?list.filter(d=>d.photos.length):list).map(rowHTML).join('');
+}
+let tsort={k:'rank',dir:1};
+document.querySelectorAll('#tbl th[data-k]').forEach(th=>th.onclick=()=>{
+  const key=th.dataset.k; tsort.dir=(tsort.k===key)?-tsort.dir:1; tsort.k=key;
+  const num=['rank','price','beds','rev','cocf','cash','dtmin','yosmi'].includes(key);
+  const list=filt().sort((a,b)=>{let x=a[key],y=b[key]; if(!num){x=String(x);y=String(y);return x<y?-1*tsort.dir:x>y?tsort.dir:0;} return (x-y)*tsort.dir;});
+  $('#tbody').innerHTML=list.map(rowHTML).join('');
+});
+['sort','maxp','minb','htonly','hidef','top10'].forEach(id=>$('#'+id).addEventListener('input',render));
+$('#maxp').addEventListener('input',()=>$('#maxpv').textContent=k(+$('#maxp').value));
+render();
+</script>
+</body></html>
